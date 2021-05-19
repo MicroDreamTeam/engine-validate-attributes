@@ -1,0 +1,28 @@
+{
+    "name": "itwmw/engine-validate-attributes",
+    "description": "微擎表单验证器注解支持",
+    "authors": [
+        {
+            "name": "虞灪",
+            "email": "995645888@qq.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Itwmw\\Validate\\Attributes\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Itwmw\\Validate\\Attributes\\Test\\": "test"
+        }
+    },
+    "license": "Apache-2.0",
+    "require": {
+        "php": "^8.0",
+        "w7/engine-validate": "^3.1.1|^2.1.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}
