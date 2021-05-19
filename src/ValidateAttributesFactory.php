@@ -2,6 +2,7 @@
 
 namespace Itwmw\Validate\Attributes;
 
+use JetBrains\PhpStorm\Pure;
 use ReflectionException;
 use W7\Validate\Support\Concerns\ValidateFactoryInterface;
 use W7\Validate\Support\Storage\ValidateFactory;
@@ -9,23 +10,18 @@ use W7\Validate\Validate;
 
 class ValidateAttributesFactory extends ValidateFactory implements ValidateFactoryInterface
 {
-    protected static ValidateAttributesFactory $instance;
-
-    public static function instance(): ValidateAttributesFactory
+    #[Pure]
+    public static function make(): ValidateAttributesFactory
     {
-        if (empty(self::$instance)) {
-            self::$instance = new static();
-        }
-
-        return self::$instance;
+        return new static();
     }
 
     public function getValidate(string $controller, string $scene = ''): bool | Validate
     {
         try {
-            $controller = new \ReflectionClass($controller);
-            $methods    = $controller->getMethod($scene);
-            $validate   = $methods->getAttributes(Validator::class);
+            $controllerRef = new \ReflectionClass($controller);
+            $methods       = $controllerRef->getMethod($scene);
+            $validate      = $methods->getAttributes(Validator::class);
             if (empty($validate)) {
                 return parent::getValidate($controller, $scene);
             }
