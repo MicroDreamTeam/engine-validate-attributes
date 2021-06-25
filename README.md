@@ -34,7 +34,7 @@ Validator有三个参数分别是：
 如果你使用了验证器提供的中间件，则可以将本扩展注册到中间件配置中：
 ```php
 use Itwmw\Validate\Attributes\ValidateAttributesFactory;
-use W7\Validate\Support\Storage\ValidateMiddlewareConfig;
+use Itwmw\Validate\Middleware\ValidateMiddlewareConfig;
 
 ValidateMiddlewareConfig::instance()->setValidateFactory(new ValidateAttributesFactory());
 ```
@@ -43,7 +43,7 @@ ValidateMiddlewareConfig::instance()->setValidateFactory(new ValidateAttributesF
 ### 独立使用
 可以通过以下方式来获取到指定的验证器
 ```php
-$validate = (new \Itwmw\Validate\Attributes\ValidateAttributesFactory())->getValidate(UserController::class,"login");
+$validate = (new Itwmw\Validate\Attributes\ValidateAttributesFactory())->getValidate(UserController::class,"login");
 
 $validate->check($userInput);
 ```
