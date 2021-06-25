@@ -4,7 +4,7 @@ namespace Itwmw\Validate\Attributes\Test;
 
 use Itwmw\Validate\Attributes\ValidateAttributesFactory;
 use Itwmw\Validate\Attributes\Validator;
-use W7\Validate\Support\Storage\ValidateMiddlewareConfig;
+use Itwmw\Validate\Middleware\ValidateMiddlewareConfig;
 use W7\Validate\Validate;
 
 class UserValidate extends Validate

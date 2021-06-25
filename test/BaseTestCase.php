@@ -3,8 +3,8 @@
 namespace Itwmw\Validate\Attributes\Test;
 
 use Itwmw\Validate\Attributes\ValidateAttributesFactory;
+use Itwmw\Validate\Middleware\ValidateMiddlewareConfig;
 use PHPUnit\Framework\TestCase;
-use W7\Validate\Support\Storage\ValidateMiddlewareConfig;
 
 class BaseTestCase extends TestCase
 {

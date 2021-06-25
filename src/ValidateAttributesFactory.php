@@ -2,10 +2,10 @@
 
 namespace Itwmw\Validate\Attributes;
 
+use Itwmw\Validate\Middleware\ValidateFactory;
+use Itwmw\Validate\Middleware\ValidateFactoryInterface;
 use JetBrains\PhpStorm\Pure;
 use ReflectionException;
-use W7\Validate\Support\Concerns\ValidateFactoryInterface;
-use W7\Validate\Support\Storage\ValidateFactory;
 use W7\Validate\Validate;
 
 class ValidateAttributesFactory extends ValidateFactory implements ValidateFactoryInterface
