@@ -19,12 +19,14 @@
     },
     "license": "Apache-2.0",
     "require": {
-        "php": "^8.0|^8.1",
-        "w7/engine-validate": "^3.4.0",
-        "itwmw/engine-validate-middleware": "^1.0.0"
+        "php": "^8.0",
+        "w7/engine-validate": "^4.0",
+        "itwmw/engine-validate-middleware": "^4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
         "friendsofphp/php-cs-fixer": "^3"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
