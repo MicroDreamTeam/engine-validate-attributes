@@ -4,7 +4,7 @@ namespace Itwmw\Validate\Attributes;
 
 use Attribute;
 
-#[Attribute]
+#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_METHOD)]
 class Validator
 {
     public function __construct(

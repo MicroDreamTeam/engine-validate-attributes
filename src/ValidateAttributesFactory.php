@@ -16,31 +16,36 @@ class ValidateAttributesFactory extends ValidateFactory implements ValidateFacto
         return new static();
     }
 
-    public function getValidate(string $controller, string $scene = ''): bool | Validate
+    public function getValidate(string $controller, string $scene = '')
     {
         try {
             $controllerRef = new \ReflectionClass($controller);
             $methods       = $controllerRef->getMethod($scene);
-            $validate      = $methods->getAttributes(Validator::class);
-            if (empty($validate)) {
+            $validators    = $methods->getAttributes(Validator::class);
+            if (empty($validators)) {
                 return parent::getValidate($controller, $scene);
             }
-            $validate = reset($validate);
 
-            /** @var Validator $validateAttribute */
-            $validateAttribute = $validate->newInstance();
+            $allValidators = [];
 
-            /** @var Validate $validator */
-            $validator = new $validateAttribute->validate;
+            foreach ($validators as $validator) {
+                /** @var Validator $validateAttribute */
+                $validateAttribute = $validator->newInstance();
 
-            if (!empty($validateAttribute->scene)) {
-                $validator->scene($validateAttribute->scene);
-            } elseif (!empty($validateAttribute->fields)) {
-                $sceneName = md5(rand(1000000, 9999999) . time());
-                $validator->setScene([$sceneName => $validateAttribute->fields])->scene($sceneName);
+                /** @var Validate $validator */
+                $validator = new $validateAttribute->validate;
+
+                if (!empty($validateAttribute->scene)) {
+                    $validator->scene($validateAttribute->scene);
+                } elseif (!empty($validateAttribute->fields)) {
+                    $sceneName = md5(rand(1000000, 9999999) . time());
+                    $validator->setScene([$sceneName => $validateAttribute->fields])->scene($sceneName);
+                }
+
+                $allValidators[] = $validator;
             }
 
-            return $validator;
+            return $allValidators;
         } catch (ReflectionException) {
             return false;
         }

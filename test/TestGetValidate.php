@@ -32,10 +32,16 @@ class TestGetValidate extends BaseTestCase
     public function testScene()
     {
         $validate = ValidateMiddlewareConfig::instance()->getValidateFactory()->getValidate(UserController::class, 'login');
+        $this->assertCount(1, $validate);
+        /** @var Validate $validate */
+        $validate = reset($validate);
         $this->assertEquals('login', $validate->getCurrentSceneName());
         $this->assertEquals(UserValidate::class, $validate::class);
 
         $validate = (new ValidateAttributesFactory())->getValidate(UserController::class, 'login');
+        $this->assertCount(1, $validate);
+        /** @var Validate $validate */
+        $validate = reset($validate);
         $this->assertEquals('login', $validate->getCurrentSceneName());
         $this->assertEquals(UserValidate::class, $validate::class);
     }
@@ -43,6 +49,9 @@ class TestGetValidate extends BaseTestCase
     public function testFields()
     {
         $validate = ValidateMiddlewareConfig::instance()->getValidateFactory()->getValidate(UserController::class, 'register');
+        $this->assertCount(1, $validate);
+        /** @var Validate $validate */
+        $validate = reset($validate);
         $this->assertEquals((new UserValidate)->getRules(['user', 'pass']), $validate->getRules());
     }
 }
