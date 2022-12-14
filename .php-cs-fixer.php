@@ -1,7 +1,4 @@
 <?php
-
-include_once 'vendor/autoload.php';
-
 $finder = PhpCsFixer\Finder::create()
     ->files()
     ->name('*.php')
