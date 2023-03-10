@@ -10,7 +10,10 @@
     "autoload": {
         "psr-4": {
             "Itwmw\\Validate\\Attributes\\": "src"
-        }
+        },
+        "files": [
+            "src/helper.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -20,9 +23,10 @@
     "license": "Apache-2.0",
     "require": {
         "php": ">=8.0",
-        "w7/engine-validate": "^4.0",
+        "w7/engine-validate": "^4.4",
         "itwmw/engine-validate-middleware": "^4.2"
     },
+
     "require-dev": {
         "phpunit/phpunit": "^8|^9"
     },

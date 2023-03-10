@@ -1,7 +1,8 @@
 <phpunit bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="validateAttributesTest">
-            <directory suffix=".php">test</directory>
+            <directory suffix=".php">./test</directory>
+            <exclude>./test/BaseTestCase.php</exclude>
         </testsuite>
     </testsuites>
 </phpunit>
