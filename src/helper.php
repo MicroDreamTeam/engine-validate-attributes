@@ -2,7 +2,7 @@
 
 use Itwmw\Validate\Attributes\AttributesValidator;
 
-if (!function_exists('attValidate')) {
+if (!function_exists('validate_attribute')) {
     /**
      * @template T
      *
@@ -17,7 +17,7 @@ if (!function_exists('attValidate')) {
      * @noinspection PhpDocSignatureInspection
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
-    function attValidate(string|object $class, ?array $input = null)
+    function validate_attribute(string|object $class, ?array $input = null)
     {
         $validator = new AttributesValidator($class);
         return $validator->check($input);
