@@ -23,7 +23,8 @@ class AttributesValidator
     }
 
     /**
-     * @param array|null $input 验证数据，如果为null则从类中获取
+     * @param array|null $input         验证数据，如果为null则从类中获取
+     * @param bool       $only_validate 只验证输入数据，不对类进行读取默认值和赋值行为
      *
      * @return T
      *
@@ -32,7 +33,7 @@ class AttributesValidator
      *
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
-    public function check(?array $input = null)
+    public function check(?array $input = null, bool $only_validate = false)
     {
         $class = $this->class;
         if (!is_object($class)) {
@@ -45,14 +46,15 @@ class AttributesValidator
         $names         = [];
         $messages      = [];
         $preprocessors = [];
-        $getValue      = is_null($input);
-        if ($getValue) {
+        if (is_null($input)) {
             $input = [];
         }
 
         foreach ($ref->getProperties() as $property) {
             $propertyName = $property->getName();
-            if ($getValue && $property->isInitialized($class)) {
+
+            // 从类中获取默认值数据
+            if (!$only_validate && !isset($input[$propertyName]) && $property->isInitialized($class)) {
                 $input[$propertyName] = $property->getValue($class);
             }
 
@@ -110,7 +112,7 @@ class AttributesValidator
         $validator->setPreprocessor($preprocessors);
 
         $validateResultData = $validator->check($input);
-        if (!$getValue) {
+        if (!$only_validate) {
             foreach ($validateResultData as $key => $value) {
                 $properties[$key]->setValue($class, $value);
             }
