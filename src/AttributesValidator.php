@@ -39,19 +39,18 @@ class AttributesValidator
             $class = new $class;
         }
 
-        $ref        = new ReflectionClass($class);
-        $validator  = Validate::make();
-        $rules      = [];
-        $properties = [];
-        $names      = [];
-        $messages   = [];
-        $getValue   = is_null($input);
+        $ref           = new ReflectionClass($class);
+        $rules         = [];
+        $properties    = [];
+        $names         = [];
+        $messages      = [];
+        $preprocessors = [];
+        $getValue      = is_null($input);
         if ($getValue) {
             $input = [];
         }
 
         foreach ($ref->getProperties() as $property) {
-            $property->setAccessible(true);
             $propertyName = $property->getName();
             if ($getValue && $property->isInitialized($class)) {
                 $input[$propertyName] = $property->getValue($class);
@@ -75,11 +74,40 @@ class AttributesValidator
                     $messages[$propertyName][Str::snake(basename($ruleNameClass))] = $message;
                 }
             }
+
+            $validatePreprocessor = $property->getAttributes(Preprocessor::class, ReflectionAttribute::IS_INSTANCEOF);
+            if (!empty($validatePreprocessor)) {
+                /** @var Preprocessor $validatePreprocessor */
+                $validatePreprocessor = $validatePreprocessor[0]->newInstance();
+                $handler              = $validatePreprocessor->getHandler();
+                if (is_string($handler) && !is_callable($handler)) {
+                    if (method_exists($class, $handler)) {
+                        $handler = fn (...$params) => $ref->getMethod($handler)->invokeArgs($class, $params);
+                    }
+                }
+                $params = $validatePreprocessor->getParams();
+                if (!empty($params)) {
+                    $preprocessor = [$handler, ...$params];
+                } else {
+                    $preprocessor = $handler;
+                }
+
+                $preprocessors[$propertyName] = $preprocessor;
+            }
         }
+
+        $validator = new class extends Validate {
+            public function setPreprocessor(array $preprocessor): static
+            {
+                $this->preprocessor = $preprocessor;
+                return $this;
+            }
+        };
 
         $validator->setRules($rules);
         $validator->setCustomAttributes(array_filter($names, fn ($name) => !empty($name)));
         $validator->setMessages(array_filter($messages, fn ($message) => !empty($message)));
+        $validator->setPreprocessor($preprocessors);
 
         $validateResultData = $validator->check($input);
         if (!$getValue) {
