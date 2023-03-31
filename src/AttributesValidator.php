@@ -52,6 +52,7 @@ class AttributesValidator
 
         foreach ($ref->getProperties() as $property) {
             $propertyName = $property->getName();
+            $propertyType = $property->getType();
 
             // 从类中获取默认值数据
             if (!$only_validate && !isset($input[$propertyName]) && $property->isInitialized($class)) {
@@ -61,9 +62,14 @@ class AttributesValidator
             $properties[$propertyName] = $property;
             $validateRules             = $property->getAttributes(RuleInterface::class, ReflectionAttribute::IS_INSTANCEOF);
             $subRules                  = [];
+
             foreach ($validateRules as $rule) {
                 $subRules[] = $this->parseRule($rule->newInstance());
             }
+            if (!in_array('nullable', $subRules) && $propertyType->allowsNull()) {
+                $subRules[] = 'nullable';
+            }
+
             $rules[$propertyName] = $subRules;
 
             $validateMessage = $property->getAttributes(Message::class, ReflectionAttribute::IS_INSTANCEOF);
