@@ -3,27 +3,27 @@
 namespace Itwmw\Validate\Attributes;
 
 use Attribute;
-use W7\Validate\Support\PreprocessorOptions;
-use W7\Validate\Support\PreprocessorParams;
-use W7\Validate\Support\PreprocessorSupport;
+use W7\Validate\Support\ProcessorOptions;
+use W7\Validate\Support\ProcessorParams;
+use W7\Validate\Support\ProcessorSupport;
 
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Preprocessor
 {
     /**
-     * @var PreprocessorOptions[]|PreprocessorParams[]
+     * @var ProcessorOptions[]|ProcessorParams[]
      */
     protected array $params = [];
 
     /**
      * @param mixed|null $handler
-     * @param PreprocessorOptions|PreprocessorParams ...$params
+     * @param ProcessorOptions|ProcessorParams ...$params
      *
      * @noinspection PhpDocSignatureInspection
      */
     public function __construct(
         protected mixed $handler = null,
-        PreprocessorSupport ...$params
+        ProcessorSupport ...$params
     ) {
         $this->params = $params ?: [];
     }

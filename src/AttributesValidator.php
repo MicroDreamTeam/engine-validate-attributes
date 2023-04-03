@@ -41,12 +41,13 @@ class AttributesValidator
             $class = new $class;
         }
 
-        $ref           = new ReflectionClass($class);
-        $rules         = [];
-        $properties    = [];
-        $names         = [];
-        $messages      = [];
-        $preprocessors = [];
+        $ref            = new ReflectionClass($class);
+        $rules          = [];
+        $properties     = [];
+        $names          = [];
+        $messages       = [];
+        $preprocessors  = [];
+        $postprocessors = [];
         if (is_null($input)) {
             $input = [];
         }
@@ -87,25 +88,8 @@ class AttributesValidator
                 }
             }
 
-            $validatePreprocessor = $property->getAttributes(Preprocessor::class, ReflectionAttribute::IS_INSTANCEOF);
-            if (!empty($validatePreprocessor)) {
-                /** @var Preprocessor $validatePreprocessor */
-                $validatePreprocessor = $validatePreprocessor[0]->newInstance();
-                $handler              = $validatePreprocessor->getHandler();
-                if (is_string($handler) && !is_callable($handler)) {
-                    if (method_exists($class, $handler)) {
-                        $handler = fn (...$params) => $ref->getMethod($handler)->invokeArgs($class, $params);
-                    }
-                }
-                $params = $validatePreprocessor->getParams();
-                if (!empty($params)) {
-                    $preprocessor = [$handler, ...$params];
-                } else {
-                    $preprocessor = $handler;
-                }
-
-                $preprocessors[$propertyName] = $preprocessor;
-            }
+            $this->getProcessor($property, Preprocessor::class, $class, $ref, $preprocessors);
+            $this->getProcessor($property, Postprocessor::class, $class, $ref, $postprocessors);
         }
 
         $validator = new class extends Validate {
@@ -114,12 +98,19 @@ class AttributesValidator
                 $this->preprocessor = $preprocessor;
                 return $this;
             }
+
+            public function setPostprocessor(array $postprocessor): static
+            {
+                $this->postprocessor = $postprocessor;
+                return $this;
+            }
         };
 
         $validator->setRules($rules);
         $validator->setCustomAttributes(array_filter($names, fn ($name) => !empty($name)));
         $validator->setMessages(array_filter($messages, fn ($message) => !empty($message)));
         $validator->setPreprocessor($preprocessors);
+        $validator->setPostprocessor($postprocessors);
 
         $validateResultData = $validator->check($input);
         if (!$only_validate) {
@@ -128,6 +119,30 @@ class AttributesValidator
             }
         }
         return $class;
+    }
+
+    protected function getProcessor(\ReflectionProperty $property, string $name, object $class, ReflectionClass $ref, array &$preprocessors): void
+    {
+        $validateProcessor = $property->getAttributes($name, ReflectionAttribute::IS_INSTANCEOF);
+        if (!empty($validateProcessor)) {
+            /** @var Preprocessor $validateProcessor */
+            $validateProcessor = $validateProcessor[0]->newInstance();
+            $handler           = $validateProcessor->getHandler();
+            if (is_string($handler) && !is_callable($handler)) {
+                if (method_exists($class, $handler)) {
+                    $handler = fn (...$params) => $ref->getMethod($handler)->invokeArgs($class, $params);
+                }
+            }
+            $params = $validateProcessor->getParams();
+            if (!empty($params)) {
+                $processor = [$handler, ...$params];
+            } else {
+                $processor = $handler;
+            }
+
+            $name                 = $property->getName();
+            $preprocessors[$name] = $processor;
+        }
     }
 
     protected function parseRule(RuleInterface $rule): string
