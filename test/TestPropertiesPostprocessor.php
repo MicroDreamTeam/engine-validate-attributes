@@ -6,23 +6,23 @@ use Itwmw\Validate\Attributes\Postprocessor;
 use Itwmw\Validate\Attributes\Rules\ArrayRule;
 use Itwmw\Validate\Attributes\Rules\Required;
 use Itwmw\Validate\Attributes\Rules\StringRule;
-use W7\Validate\Support\ProcessorOptions;
-use W7\Validate\Support\ProcessorParams;
+use W7\Validate\Support\Processor\ProcessorExecCond;
+use W7\Validate\Support\Processor\ProcessorParams;
 
 class PropertiesPostprocessorTest
 {
     #[Required]
     #[ArrayRule('@keyInt')]
-    #[Postprocessor('array_unique', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Postprocessor('array_unique', ProcessorExecCond::WHEN_NOT_EMPTY, ProcessorParams::Value)]
     public array $group = [];
 
     #[Required]
     #[StringRule]
-    #[Postprocessor('trim', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Postprocessor('trim', ProcessorExecCond::WHEN_NOT_EMPTY, ProcessorParams::Value)]
     public string $name;
 
-    #[Postprocessor('trim', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
-    #[Postprocessor('base64_encode', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Postprocessor('trim', ProcessorExecCond::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Postprocessor('base64_encode', ProcessorExecCond::WHEN_NOT_EMPTY, ProcessorParams::Value)]
     public string $info;
 }
 class TestPropertiesPostprocessor extends BaseTestCase

@@ -10,34 +10,34 @@ use Itwmw\Validate\Attributes\Rules\Numeric;
 use Itwmw\Validate\Attributes\Rules\Required;
 use Itwmw\Validate\Attributes\Rules\StringRule;
 use W7\Validate\Exception\ValidateException;
-use W7\Validate\Support\ProcessorOptions;
-use W7\Validate\Support\ProcessorParams;
+use W7\Validate\Support\Processor\ProcessorExecCond;
+use W7\Validate\Support\Processor\ProcessorParams;
 
 class PropertiesPreprocessorTest
 {
     #[Required]
-    #[Preprocessor('test', ProcessorOptions::WHEN_EMPTY)]
+    #[Preprocessor('test', ProcessorExecCond::WHEN_EMPTY)]
     public string $name;
 
     #[Numeric]
     #[Required]
-    #[Preprocessor('setAge', ProcessorOptions::WHEN_EMPTY)]
+    #[Preprocessor('setAge', ProcessorExecCond::WHEN_EMPTY)]
     public int $age;
 
     #[Required]
     #[StringRule]
-    #[Preprocessor('trim', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Preprocessor('trim', ProcessorExecCond::WHEN_NOT_EMPTY, ProcessorParams::Value)]
     #[Message('自我介绍')]
     public string $selfIntroduction;
 
     #[Nullable]
-    #[Preprocessor('trim', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
-    #[Preprocessor('base64_encode', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Preprocessor('trim', ProcessorExecCond::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Preprocessor('base64_encode', ProcessorExecCond::WHEN_NOT_EMPTY, ProcessorParams::Value)]
     public ?string $info;
 
     #[Nullable]
-    #[Preprocessor('trim', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
-    #[Postprocessor('base64_encode', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Preprocessor('trim', ProcessorExecCond::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Postprocessor('base64_encode', ProcessorExecCond::WHEN_NOT_EMPTY, ProcessorParams::Value)]
     public ?string $info2;
 
     public function setAge(): int

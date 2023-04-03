@@ -4,7 +4,7 @@ namespace Itwmw\Validate\Attributes;
 
 use Itwmw\Validate\Attributes\Rules\RuleInterface;
 use Itwmw\Validation\Support\Str;
-use W7\Validate\Support\ProcessorOptions;
+use W7\Validate\Support\Processor\ProcessorOptions;
 use W7\Validate\Validate;
 use ReflectionAttribute;
 use ReflectionClass;

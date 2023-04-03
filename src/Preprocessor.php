@@ -3,21 +3,22 @@
 namespace Itwmw\Validate\Attributes;
 
 use Attribute;
-use W7\Validate\Support\ProcessorOptions;
-use W7\Validate\Support\ProcessorParams;
-use W7\Validate\Support\ProcessorSupport;
+use W7\Validate\Support\Processor\ProcessorExecCond;
+use W7\Validate\Support\Processor\ProcessorOptions;
+use W7\Validate\Support\Processor\ProcessorParams;
+use W7\Validate\Support\Processor\ProcessorSupport;
 
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Preprocessor
 {
     /**
-     * @var ProcessorOptions[]|ProcessorParams[]
+     * @var ProcessorOptions[]|ProcessorParams[]|ProcessorExecCond[]
      */
     protected array $params = [];
 
     /**
      * @param mixed|null $handler
-     * @param ProcessorOptions|ProcessorParams ...$params
+     * @param ProcessorOptions|ProcessorParams|ProcessorExecCond ...$params
      *
      * @noinspection PhpDocSignatureInspection
      */
