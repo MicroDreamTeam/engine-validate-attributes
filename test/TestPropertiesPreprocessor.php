@@ -3,7 +3,9 @@
 namespace Itwmw\Validate\Attributes\Test;
 
 use Itwmw\Validate\Attributes\Message;
+use Itwmw\Validate\Attributes\Postprocessor;
 use Itwmw\Validate\Attributes\Preprocessor;
+use Itwmw\Validate\Attributes\Rules\Nullable;
 use Itwmw\Validate\Attributes\Rules\Numeric;
 use Itwmw\Validate\Attributes\Rules\Required;
 use Itwmw\Validate\Attributes\Rules\StringRule;
@@ -27,6 +29,16 @@ class PropertiesPreprocessorTest
     #[Preprocessor('trim', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
     #[Message('自我介绍')]
     public string $selfIntroduction;
+
+    #[Nullable]
+    #[Preprocessor('trim', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Preprocessor('base64_encode', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    public ?string $info;
+
+    #[Nullable]
+    #[Preprocessor('trim', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Postprocessor('base64_encode', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    public ?string $info2;
 
     public function setAge(): int
     {
@@ -63,5 +75,18 @@ class TestPropertiesPreprocessor extends BaseTestCase
         $this->expectException(ValidateException::class);
         $this->expectExceptionMessage('自我介绍 不能为空');
         validate_attribute(PropertiesPreprocessorTest::class, []);
+    }
+
+    public function testBase64Encode(): void
+    {
+        $data = validate_attribute(PropertiesPreprocessorTest::class, [
+            'info' => '    test  '
+        ], ['info']);
+        $this->assertEquals('dGVzdA==', $data->info);
+
+        $data = validate_attribute(PropertiesPreprocessorTest::class, [
+            'info2' => '    test  '
+        ], ['info2']);
+        $this->assertEquals('dGVzdA==', $data->info2);
     }
 }

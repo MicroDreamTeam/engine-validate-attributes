@@ -7,7 +7,7 @@ use W7\Validate\Support\ProcessorOptions;
 use W7\Validate\Support\ProcessorParams;
 use W7\Validate\Support\ProcessorSupport;
 
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Preprocessor
 {
     /**

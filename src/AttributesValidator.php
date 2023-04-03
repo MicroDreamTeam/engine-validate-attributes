@@ -4,6 +4,7 @@ namespace Itwmw\Validate\Attributes;
 
 use Itwmw\Validate\Attributes\Rules\RuleInterface;
 use Itwmw\Validation\Support\Str;
+use W7\Validate\Support\ProcessorOptions;
 use W7\Validate\Validate;
 use ReflectionAttribute;
 use ReflectionClass;
@@ -123,25 +124,31 @@ class AttributesValidator
 
     protected function getProcessor(\ReflectionProperty $property, string $name, object $class, ReflectionClass $ref, array &$preprocessors): void
     {
-        $validateProcessor = $property->getAttributes($name, ReflectionAttribute::IS_INSTANCEOF);
-        if (!empty($validateProcessor)) {
-            /** @var Preprocessor $validateProcessor */
-            $validateProcessor = $validateProcessor[0]->newInstance();
-            $handler           = $validateProcessor->getHandler();
-            if (is_string($handler) && !is_callable($handler)) {
-                if (method_exists($class, $handler)) {
-                    $handler = fn (...$params) => $ref->getMethod($handler)->invokeArgs($class, $params);
+        $validateProcessors = $property->getAttributes($name);
+        if (!empty($validateProcessors)) {
+            $name = $property->getName();
+            foreach ($validateProcessors as $validateProcessor) {
+                $validateProcessor = $validateProcessor->newInstance();
+                /** @var Preprocessor $validateProcessor */
+                $handler = $validateProcessor->getHandler();
+                if (is_string($handler) && !is_callable($handler)) {
+                    if (method_exists($class, $handler)) {
+                        $handler = fn (...$params) => $ref->getMethod($handler)->invokeArgs($class, $params);
+                    }
                 }
+                $params = $validateProcessor->getParams();
+                if (!empty($params)) {
+                    $processor = [$handler, ...$params];
+                } else {
+                    $processor = $handler;
+                }
+                $preprocessors[$name][] = $processor;
             }
-            $params = $validateProcessor->getParams();
-            if (!empty($params)) {
-                $processor = [$handler, ...$params];
+            if (1 === count($preprocessors[$name])) {
+                $preprocessors[$name] = $preprocessors[$name][0];
             } else {
-                $processor = $handler;
+                $preprocessors[$name][] = ProcessorOptions::MULTIPLE;
             }
-
-            $name                 = $property->getName();
-            $preprocessors[$name] = $processor;
         }
     }
 

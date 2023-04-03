@@ -20,6 +20,10 @@ class PropertiesPostprocessorTest
     #[StringRule]
     #[Postprocessor('trim', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
     public string $name;
+
+    #[Postprocessor('trim', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    #[Postprocessor('base64_encode', ProcessorOptions::WHEN_NOT_EMPTY, ProcessorParams::Value)]
+    public string $info;
 }
 class TestPropertiesPostprocessor extends BaseTestCase
 {
@@ -39,5 +43,14 @@ class TestPropertiesPostprocessor extends BaseTestCase
             'name' => '  噢哈哈哈  '
         ], ['name']);
         $this->assertEquals('噢哈哈哈', $data->name);
+    }
+
+    public function testBase64Encode(): void
+    {
+        $data = validate_attribute(PropertiesPostprocessorTest::class, [
+            'info' => '    test  '
+        ], ['info']);
+
+        $this->assertEquals('dGVzdA==', $data->info);
     }
 }
