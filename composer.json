@@ -1,6 +1,6 @@
 {
     "name": "itwmw/engine-validate-attributes",
-    "description": "微擎表单验证器注解支持",
+    "description": "微擎表单验证器注解验证",
     "authors": [
         {
             "name": "虞灪",

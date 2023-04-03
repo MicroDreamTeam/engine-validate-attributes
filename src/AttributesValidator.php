@@ -25,6 +25,7 @@ class AttributesValidator
     /**
      * @param array|null $input         验证数据，如果为null则从类中获取
      * @param bool       $only_validate 只验证输入数据，不对类进行读取默认值和赋值行为
+     * @param array|null $fields        待验证的字段，如果为null则验证全部字段
      *
      * @return T
      *
@@ -33,7 +34,7 @@ class AttributesValidator
      *
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
-    public function check(?array $input = null, bool $only_validate = false)
+    public function check(?array $input = null, ?array $fields = null, bool $only_validate = false)
     {
         $class = $this->class;
         if (!is_object($class)) {
@@ -52,6 +53,9 @@ class AttributesValidator
 
         foreach ($ref->getProperties() as $property) {
             $propertyName = $property->getName();
+            if (!is_null($fields) && !in_array($propertyName, $fields)) {
+                continue;
+            }
             $propertyType = $property->getType();
 
             // 从类中获取默认值数据

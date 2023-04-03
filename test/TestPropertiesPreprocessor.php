@@ -8,22 +8,23 @@ use Itwmw\Validate\Attributes\Rules\Numeric;
 use Itwmw\Validate\Attributes\Rules\Required;
 use Itwmw\Validate\Attributes\Rules\StringRule;
 use W7\Validate\Exception\ValidateException;
-use W7\Validate\Support\PreprocessorSupport;
+use W7\Validate\Support\PreprocessorOptions;
+use W7\Validate\Support\PreprocessorParams;
 
 class PropertiesTest
 {
     #[Required]
-    #[Preprocessor('test', PreprocessorSupport::WhenEmpty)]
+    #[Preprocessor('test', PreprocessorOptions::WHEN_EMPTY)]
     public string $name;
 
     #[Numeric]
     #[Required]
-    #[Preprocessor('setAge', PreprocessorSupport::WhenEmpty)]
+    #[Preprocessor('setAge', PreprocessorOptions::WHEN_EMPTY)]
     public int $age;
 
     #[Required]
     #[StringRule]
-    #[Preprocessor('trim', PreprocessorSupport::Value)]
+    #[Preprocessor('trim', PreprocessorOptions::WHEN_NOT_EMPTY, PreprocessorParams::Value)]
     #[Message('自我介绍')]
     public string $selfIntroduction;
 
@@ -36,19 +37,19 @@ class TestPropertiesPreprocessor extends BaseTestCase
 {
     public function testSetDefault(): void
     {
-        $data = validate_attribute(PropertiesTest::class, []);
+        $data = validate_attribute(PropertiesTest::class, fields: ['name']);
         $this->assertEquals('test', $data->name);
 
-        $data = validate_attribute(PropertiesTest::class, ['name' => 'yuyu']);
+        $data = validate_attribute(PropertiesTest::class, ['name' => 'yuyu'], fields: ['name']);
         $this->assertEquals('yuyu', $data->name);
     }
 
     public function testSetAge(): void
     {
-        $data = validate_attribute(PropertiesTest::class, []);
+        $data = validate_attribute(PropertiesTest::class, fields: ['age']);
         $this->assertEquals(18, $data->age);
 
-        $data = validate_attribute(PropertiesTest::class, ['age' => 20]);
+        $data = validate_attribute(PropertiesTest::class, ['age' => 20], fields: ['age']);
         $this->assertEquals(20, $data->age);
     }
 
