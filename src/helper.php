@@ -13,9 +13,9 @@ if (!function_exists('validate_attribute')) {
      * @param class-string<T>|T $class         带有验证注解的类或完整类名
      * @param array|null        $input         验证数据，如果为null则从类中获取
      * @param array|null        $fields        待验证的字段，如果为null则验证全部字段
-     * @param bool              $only_validate 只验证输入数据，不对$class进行读取默认值和赋值行为
+     * @param bool              $validate      是否需要对类进行验证，如果为true则进行验证，否则返回验证器
      *
-     * @return T
+     * @return T|Validate
      *
      * @throws ReflectionException
      * @throws \W7\Validate\Exception\ValidateException
@@ -23,10 +23,10 @@ if (!function_exists('validate_attribute')) {
      * @noinspection PhpDocSignatureInspection
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
-    function validate_attribute(string|object $class, ?array $input = null, ?array $fields = null, bool $only_validate = false)
+    function validate_attribute(string|object $class, ?array $input = null, ?array $fields = null, bool $validate = true)
     {
         $validator = new AttributesValidator($class);
-        return $validator->check($input, $fields, $only_validate);
+        return $validator->validate($input, $fields, $validate);
     }
 }
 
@@ -34,9 +34,13 @@ if (!function_exists('get_class_method_validator')) {
     /**
      * 获取方法中的验证器
      *
-     * @param object|string $class  类或者类名
-     * @param string        $method 方法名
-     * @return false|Validate[]
+     * @param object|string $class 类或者类名
+     * @param string $method       方法名
+     * @return false|Validate
+     *
+     * @throws \W7\Validate\Exception\ValidateException
+     *
+     * @noinspection PhpFullyQualifiedNameUsageInspection
      */
     function get_class_method_validator(object|string $class, string $method): false|array
     {
@@ -54,17 +58,25 @@ if (!function_exists('get_class_method_validator')) {
                 /** @var Validator $validateAttribute */
                 $validateAttribute = $validator->newInstance();
 
-                /** @var Validate $validator */
-                $validator = new $validateAttribute->validate;
+                if (!empty($validateAttribute->validate) && class_exists($validateAttribute->validate)) {
+                    /** @var Validate $validator */
+                    $validator = new $validateAttribute->validate;
 
-                if (!empty($validateAttribute->scene)) {
-                    $validator->scene($validateAttribute->scene);
-                } elseif (!empty($validateAttribute->fields)) {
-                    $sceneName = md5(rand(1000000, 9999999) . time());
-                    $validator->setScene([$sceneName => $validateAttribute->fields])->scene($sceneName);
+                    if (!empty($validateAttribute->scene)) {
+                        $validator->scene($validateAttribute->scene);
+                    } elseif (!empty($validateAttribute->fields)) {
+                        $sceneName = md5(rand(1000000, 9999999) . time());
+                        $validator->setScene([$sceneName => $validateAttribute->fields])->scene($sceneName);
+                    }
+
+                    $allValidators[] = $validator;
                 }
 
-                $allValidators[] = $validator;
+                if (!empty($validateAttribute->dataClass) && class_exists($validateAttribute->dataClass)) {
+                    $attributesValidator = new AttributesValidator($validateAttribute->dataClass);
+                    $validator           = $attributesValidator->validate(fields:$validateAttribute->fields ?: null, validate: false);
+                    $allValidators[]     = $validator;
+                }
             }
 
             return $allValidators;

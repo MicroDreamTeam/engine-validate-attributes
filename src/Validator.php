@@ -8,9 +8,10 @@ use Attribute;
 class Validator
 {
     public function __construct(
-        public string $validate,
+        public ?string $validate = null,
         public string $scene = '',
-        public array $fields = []
+        public array $fields = [],
+        public ?string $dataClass = null
     ) {
     }
 }

@@ -83,7 +83,7 @@ class TestPropertiesValidate extends BaseTestCase
             'status'     => 1
         ];
 
-        $result = (new AttributesValidator(Data::class))->check($input);
+        $result = (new AttributesValidator(Data::class))->validate($input);
 
         $this->assertEquals($input['name'], $result->name);
         $this->assertEquals($input['status'], $result->status);
@@ -92,7 +92,7 @@ class TestPropertiesValidate extends BaseTestCase
 
         $this->expectException(ValidateException::class);
         $this->expectExceptionMessage('名称 不能为空。');
-        (new AttributesValidator(Data::class))->check();
+        (new AttributesValidator(Data::class))->validate();
     }
 
     /**
@@ -104,7 +104,7 @@ class TestPropertiesValidate extends BaseTestCase
     public function testCheckObjectDataValidate()
     {
         $data   = new InitData('李浩', '259@qq.com', [1, 2, 3, 4], 1);
-        $result = (new AttributesValidator($data))->check();
+        $result = (new AttributesValidator($data))->validate();
         $this->assertEquals('李浩', $result->name);
         $this->assertEquals('259@qq.com', $result->email);
         $this->assertEquals([1, 2, 3, 4], $result->data);
@@ -112,6 +112,6 @@ class TestPropertiesValidate extends BaseTestCase
         $data = new InitData('李浩', '', [1, 2, 3, 4], 1);
         $this->expectException(ValidateException::class);
         $this->expectExceptionMessage('邮箱不能为空');
-        (new AttributesValidator($data))->check();
+        (new AttributesValidator($data))->validate();
     }
 }
