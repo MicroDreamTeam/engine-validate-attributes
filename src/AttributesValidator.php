@@ -161,8 +161,6 @@ class AttributesValidator
             $ruleName = substr($ruleName, 0, -4);
         }
 
-        $ruleName = Str::snake($ruleName);
-
         $ruleArgs = implode(',', $rule->getArgs());
         if (empty($ruleArgs)) {
             $ruleString = $ruleName;
