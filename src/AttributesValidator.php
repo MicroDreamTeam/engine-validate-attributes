@@ -107,9 +107,12 @@ class AttributesValidator
             }
         };
 
+        $messages         = array_filter($messages, fn ($message) => !empty($message));
+        $customAttributes = array_filter($names, fn ($name) => !empty($name));
+
         $validator->setRules($rules);
-        $validator->setCustomAttributes(array_filter($names, fn ($name) => !empty($name)));
-        $validator->setMessages(array_filter($messages, fn ($message) => !empty($message)));
+        $validator->setCustomAttributes($customAttributes);
+        $validator->setMessages($messages);
         $validator->setPreprocessor($preprocessors);
         $validator->setPostprocessor($postprocessors);
 
@@ -160,6 +163,8 @@ class AttributesValidator
         if (str_ends_with($ruleName, 'Rule')) {
             $ruleName = substr($ruleName, 0, -4);
         }
+
+        $ruleName = lcfirst($ruleName);
 
         $ruleArgs = implode(',', $rule->getArgs());
         if (0 === strlen($ruleArgs)) {
