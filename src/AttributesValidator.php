@@ -162,7 +162,7 @@ class AttributesValidator
         }
 
         $ruleArgs = implode(',', $rule->getArgs());
-        if (empty($ruleArgs)) {
+        if (0 === strlen($ruleArgs)) {
             $ruleString = $ruleName;
         } else {
             $ruleString = "{$ruleName}:{$ruleArgs}";
