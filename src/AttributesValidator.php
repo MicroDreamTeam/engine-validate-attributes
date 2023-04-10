@@ -3,7 +3,6 @@
 namespace Itwmw\Validate\Attributes;
 
 use Itwmw\Validate\Attributes\Rules\RuleInterface;
-use Itwmw\Validation\Support\Str;
 use W7\Validate\Support\Processor\ProcessorOptions;
 use W7\Validate\Validate;
 use ReflectionAttribute;
@@ -85,7 +84,7 @@ class AttributesValidator
                 $validateMessage      = $validateMessage[0]->newInstance();
                 $names[$propertyName] = $validateMessage->getName();
                 foreach ($validateMessage->getMessages() as $ruleNameClass => $message) {
-                    $messages[$propertyName][Str::snake(basename($ruleNameClass))] = $message;
+                    $messages[$propertyName][lcfirst(basename($ruleNameClass))] = $message;
                 }
             }
 
