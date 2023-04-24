@@ -55,7 +55,7 @@ class TestMultipleValidate extends BaseTestCase
 
         $rules = [];
         foreach ($validates as $validate) {
-            $rules = array_merge([], $rules, array_keys($validate->getRules()));
+            $rules = array_merge([], $rules, array_keys($validate->getInitialRules()));
         }
         $checkDataKey = ['a', 'b', 'c', 'd', 'e', 'g'];
 

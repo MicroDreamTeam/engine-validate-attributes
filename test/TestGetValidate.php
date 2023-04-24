@@ -109,8 +109,13 @@ class TestGetValidate extends BaseTestCase
         $validate = ValidateMiddlewareConfig::instance()->getValidateFactory()->getValidate(UserController::class, 'register');
         $this->assertCount(1, $validate);
         $validate = reset($validate);
+
+        $validatorRule = (new UserValidate)->getInitialRules();
+        $validatorRule = array_intersect_key($validatorRule, array_flip(['user', 'pass']));
         /** @var Validate $validate */
-        $this->assertEquals((new UserValidate)->getRules(['user', 'pass']), $validate->getRules());
+        $attValidatorRule = $validate->getInitialRules();
+
+        $this->assertEquals($validatorRule, $attValidatorRule);
     }
 
     public function testValidatorAndDataClassValidator()

@@ -37,6 +37,8 @@ class Data
     public string $status;
 
     public string $not;
+
+    public string $test = '1';
 }
 
 class InitData

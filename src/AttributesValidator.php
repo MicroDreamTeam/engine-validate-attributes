@@ -3,6 +3,7 @@
 namespace Itwmw\Validate\Attributes;
 
 use Itwmw\Validate\Attributes\Rules\RuleInterface;
+use Itwmw\Validation\Support\Str;
 use W7\Validate\Support\Processor\ProcessorOptions;
 use W7\Validate\Validate;
 use ReflectionAttribute;
@@ -52,6 +53,11 @@ class AttributesValidator
             $input = [];
         }
 
+        $extendRules          = [];
+        $extendImplicitRules  = [];
+        $extendDependentRules = [];
+        $ruleMessages         = [];
+
         foreach ($ref->getProperties() as $property) {
             $propertyName = $property->getName();
             if (!is_null($fields) && !in_array($propertyName, $fields)) {
@@ -71,6 +77,37 @@ class AttributesValidator
             foreach ($validateRules as $rule) {
                 $subRules[] = $this->parseRule($rule->newInstance());
             }
+
+            $customRules = $property->getAttributes(Rule::class, ReflectionAttribute::IS_INSTANCEOF);
+            foreach ($customRules as $customRule) {
+                $customRule       = $customRule->newInstance();
+                $customRuleMethod = new \ReflectionMethod($class, $customRule->name);
+                $extension        = function (...$params) use ($customRuleMethod, $class) {
+                    return $customRuleMethod->invokeArgs($class, $params);
+                };
+
+                $subRules[] = $customRule->getRule();
+
+                // 判断如果是当前类的方法实现的规则，则进行规则注入
+                /** @var Rule $customRule */
+                if (method_exists($class, $customRule->name)) {
+                    if (Rule::TYPE_NORMAL === $customRule->type) {
+                        $extendRules[$customRule->name] = $extension;
+                    } elseif (Rule::TYPE_IMPLICIT === $customRule->type) {
+                        $extendImplicitRules[$customRule->name] = $extension;
+                    } elseif (Rule::TYPE_DEPENDENT === $customRule->type) {
+                        $extendDependentRules[$customRule->name] = $extension;
+                    } else {
+                        throw new \RuntimeException('未知的自定义规则类型');
+                    }
+                    $customRuleMessage = $customRuleMethod->getAttributes(RuleMessage::class, ReflectionAttribute::IS_INSTANCEOF);
+                    if (!empty($customRuleMessage)) {
+                        $customRuleMessage                           = reset($customRuleMessage)->newInstance();
+                        $ruleMessages[Str::snake($customRule->name)] = $customRuleMessage->getMessage();
+                    }
+                }
+            }
+
             if (!in_array('nullable', $subRules) && $propertyType->allowsNull()) {
                 $subRules[] = 'nullable';
             }
@@ -104,6 +141,12 @@ class AttributesValidator
                 $this->postprocessor = $postprocessor;
                 return $this;
             }
+
+            public function setRuleMessages(array $ruleMessages): static
+            {
+                $this->ruleMessage = $ruleMessages;
+                return $this;
+            }
         };
 
         $messages         = array_filter($messages, fn ($message) => !empty($message));
@@ -114,6 +157,16 @@ class AttributesValidator
         $validator->setMessages($messages);
         $validator->setPreprocessor($preprocessors);
         $validator->setPostprocessor($postprocessors);
+        $validator->setRuleMessages($ruleMessages);
+        foreach ($extendRules as $key => $rule) {
+            $validator->extend($key, $rule);
+        }
+        foreach ($extendImplicitRules as $key => $rule) {
+            $validator->extendImplicit($key, $rule);
+        }
+        foreach ($extendDependentRules as $key => $rule) {
+            $validator->extendDependent($key, $rule);
+        }
 
         if (!$validate) {
             return $validator;
