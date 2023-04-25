@@ -5,12 +5,12 @@ namespace Itwmw\Validate\Attributes;
 use Itwmw\Validate\Attributes\Rules\RuleInterface;
 use Itwmw\Validation\Support\Str;
 use W7\Validate\Support\Processor\ProcessorOptions;
-use W7\Validate\Validate;
 use ReflectionAttribute;
 use ReflectionClass;
 
 /**
  * @template T
+ * @internal
  */
 class AttributesValidator
 {
@@ -82,9 +82,7 @@ class AttributesValidator
             foreach ($customRules as $customRule) {
                 $customRule       = $customRule->newInstance();
                 $customRuleMethod = new \ReflectionMethod($class, $customRule->name);
-                $extension        = function (...$params) use ($customRuleMethod, $class) {
-                    return $customRuleMethod->invokeArgs($class, $params);
-                };
+                $extension        = $customRuleMethod->getClosure($class);
 
                 $subRules[] = $customRule->getRule();
 
@@ -129,25 +127,7 @@ class AttributesValidator
             $this->getProcessor($property, Postprocessor::class, $class, $ref, $postprocessors);
         }
 
-        $validator = new class extends Validate {
-            public function setPreprocessor(array $preprocessor): static
-            {
-                $this->preprocessor = $preprocessor;
-                return $this;
-            }
-
-            public function setPostprocessor(array $postprocessor): static
-            {
-                $this->postprocessor = $postprocessor;
-                return $this;
-            }
-
-            public function setRuleMessages(array $ruleMessages): static
-            {
-                $this->ruleMessage = $ruleMessages;
-                return $this;
-            }
-        };
+        $validator = new AttributeValidate();
 
         $messages         = array_filter($messages, fn ($message) => !empty($message));
         $customAttributes = array_filter($names, fn ($name) => !empty($name));

@@ -1,7 +1,7 @@
 <?php
 
 use Itwmw\Validate\Attributes\AttributesValidator;
-use Itwmw\Validate\Attributes\Validator;
+use Itwmw\Validate\Attributes\ClassMethodValidator;
 use W7\Validate\Validate;
 
 if (!function_exists('validate_attribute')) {
@@ -38,50 +38,10 @@ if (!function_exists('get_class_method_validator')) {
      * @param string $method       方法名
      * @return false|Validate
      *
-     * @throws \W7\Validate\Exception\ValidateException
-     *
-     * @noinspection PhpFullyQualifiedNameUsageInspection
      */
     function get_class_method_validator(object|string $class, string $method): false|array
     {
-        try {
-            $controllerRef = new \ReflectionClass($class);
-            $methods       = $controllerRef->getMethod($method);
-            $validators    = $methods->getAttributes(Validator::class);
-            if (empty($validators)) {
-                return false;
-            }
-
-            $allValidators = [];
-
-            foreach ($validators as $validator) {
-                /** @var Validator $validateAttribute */
-                $validateAttribute = $validator->newInstance();
-
-                if (!empty($validateAttribute->validate) && class_exists($validateAttribute->validate)) {
-                    /** @var Validate $validator */
-                    $validator = new $validateAttribute->validate;
-
-                    if (!empty($validateAttribute->scene)) {
-                        $validator->scene($validateAttribute->scene);
-                    } elseif (!empty($validateAttribute->fields)) {
-                        $sceneName = md5(rand(1000000, 9999999) . time());
-                        $validator->setScene([$sceneName => $validateAttribute->fields])->scene($sceneName);
-                    }
-
-                    $allValidators[] = $validator;
-                }
-
-                if (!empty($validateAttribute->dataClass) && class_exists($validateAttribute->dataClass)) {
-                    $attributesValidator = new AttributesValidator($validateAttribute->dataClass);
-                    $validator           = $attributesValidator->validate(fields:$validateAttribute->fields ?: null, validate: false);
-                    $allValidators[]     = $validator;
-                }
-            }
-
-            return $allValidators;
-        } catch (ReflectionException) {
-            return false;
-        }
+        $validator = new ClassMethodValidator($class, $method);
+        return $validator->getValidator();
     }
 }
