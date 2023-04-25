@@ -70,10 +70,7 @@ class ClassMethodValidator
         foreach ($propertyAttributes as $propertyAttribute) {
             $propertyValidator = $propertyAttribute->newInstance();
             /** @var PropertyValidator $propertyValidator */
-            $validator = $propertyValidator->getValidator();
-            if (false !== $validator) {
-                $validators[] = $validator;
-            }
+            $validators[] = $propertyValidator->getValidator();
         }
 
         return $validators;
