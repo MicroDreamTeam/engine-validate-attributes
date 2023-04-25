@@ -51,14 +51,14 @@ class ClassMethodValidator
     }
 
     /**
-     * @return array<Validate>
+     * @return array<Validate|PropertyValidator>
      *
      * @throws ReflectionException
      * @throws \W7\Validate\Exception\ValidateException
      *
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
-    public function getPropertyValidator(): array
+    public function getPropertyValidator(bool $validator = true): array
     {
         $method             = new \ReflectionMethod($this->class, $this->method);
         $propertyAttributes = $method->getAttributes(PropertyValidator::class);
@@ -69,8 +69,12 @@ class ClassMethodValidator
         $validators = [];
         foreach ($propertyAttributes as $propertyAttribute) {
             $propertyValidator = $propertyAttribute->newInstance();
-            /** @var PropertyValidator $propertyValidator */
-            $validators[] = $propertyValidator->getValidator();
+            if ($validator) {
+                /** @var PropertyValidator $propertyValidator */
+                $validators[] = $propertyValidator->getValidator();
+            } else {
+                $validators[] = $propertyValidator;
+            }
         }
 
         return $validators;
