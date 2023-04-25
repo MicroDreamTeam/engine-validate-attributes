@@ -80,15 +80,14 @@ class AttributesValidator
 
             $customRules = $property->getAttributes(Rule::class, ReflectionAttribute::IS_INSTANCEOF);
             foreach ($customRules as $customRule) {
-                $customRule       = $customRule->newInstance();
-                $customRuleMethod = new \ReflectionMethod($class, $customRule->name);
-                $extension        = $customRuleMethod->getClosure($class);
-
+                $customRule = $customRule->newInstance();
                 $subRules[] = $customRule->getRule();
 
                 // 判断如果是当前类的方法实现的规则，则进行规则注入
                 /** @var Rule $customRule */
                 if (method_exists($class, $customRule->name)) {
+                    $customRuleMethod = new \ReflectionMethod($class, $customRule->name);
+                    $extension        = $customRuleMethod->getClosure($class);
                     if (Rule::TYPE_NORMAL === $customRule->type) {
                         $extendRules[$customRule->name] = $extension;
                     } elseif (Rule::TYPE_IMPLICIT === $customRule->type) {
