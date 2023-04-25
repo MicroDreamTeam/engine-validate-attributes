@@ -2,11 +2,13 @@
 
 namespace Itwmw\Validate\Attributes\Test;
 
+use Itwmw\Validate\Attributes\EventFunc;
 use Itwmw\Validate\Attributes\PropertyValidator;
 use Itwmw\Validate\Attributes\Rules\Numeric;
 use Itwmw\Validate\Attributes\Rules\Required;
 use Itwmw\Validate\Attributes\Rules\StringRule;
 use Itwmw\Validate\Attributes\Validator;
+use W7\Validate\Exception\ValidateException;
 use W7\Validate\Validate;
 
 class PropertiesAndAttributeValidator extends Validate
@@ -31,9 +33,9 @@ class PropertiesAndAttributeDataClass
     #[Numeric]
     public int $age = 1;
 
-    public function checkAge(): bool|string
+    public function checkAge(array $data, int $min_age = 18): bool|string
     {
-        return $this->age >= 18 ? true : '未成年人不能注册';
+        return $this->age >= $min_age ? true : '未成年人不能注册';
     }
 }
 
@@ -67,8 +69,13 @@ class PropertiesAndAttributeClass
     {
     }
 
-    #[PropertyValidator(PropertiesAndAttributeDataClass::class, after:'checkAge')]
+    #[PropertyValidator(PropertiesAndAttributeDataClass::class, after:new EventFunc('checkAge'))]
     public function test6()
+    {
+    }
+
+    #[PropertyValidator(PropertiesAndAttributeDataClass::class, after:new EventFunc('checkAge', 12))]
+    public function test7()
     {
     }
 }
@@ -193,16 +200,31 @@ class TestPropertiesAndAttribute extends BaseTestCase
 
     public function testValidatorForPropertyValidatorAndUseAfter()
     {
+        $this->expectException(ValidateException::class);
+        $this->expectExceptionMessage('未成年人不能注册');
         $validators = get_class_method_validator(PropertiesAndAttributeClass::class, 'test6');
         $data       = [];
         foreach ($validators as $validator) {
             $_data = $validator->check([
                 'name' => 'test',
-                'age'  => 18,
+                'age'  => 12,
+            ]);
+            $data = array_merge($data, $_data);
+        }
+    }
+
+    public function testValidatorForPropertyValidatorAndUseAfterSetParams()
+    {
+        $validators = get_class_method_validator(PropertiesAndAttributeClass::class, 'test7');
+        $data       = [];
+        foreach ($validators as $validator) {
+            $_data = $validator->check([
+                'name' => 'test',
+                'age'  => 12,
             ]);
             $data = array_merge($data, $_data);
         }
 
-        $this->assertSame(18, $data['age']);
+        $this->assertSame(12, $data['age']);
     }
 }

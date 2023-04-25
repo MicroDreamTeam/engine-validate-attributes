@@ -21,14 +21,14 @@ class PropertyValidator
      *
      * @param class-string<T> $dataClass
      * @param array<string>|null $fields
-     * @param array<string>|string $after
-     * @param array<string>|string $before
+     * @param array<EventFunc>|EventFunc $after
+     * @param array<EventFunc>|EventFunc $before
      */
     public function __construct(
         public readonly string $dataClass,
         public readonly ?array $fields = null,
-        public readonly array|string $after = [],
-        public readonly array|string $before = [],
+        public readonly array|EventFunc $after = [],
+        public readonly array|EventFunc $before = [],
     ) {
         if (!class_exists($this->dataClass)) {
             throw new \InvalidArgumentException('没有找到指定的数据类');
@@ -36,11 +36,17 @@ class PropertyValidator
         $this->class = new $this->dataClass;
     }
 
+    /**
+     * @return array<EventFunc>
+     */
     public function getAfter(): array
     {
         return is_array($this->after) ? $this->after : [$this->after];
     }
 
+    /**
+     * @return array<EventFunc>
+     */
     public function getBefore(): array
     {
         return is_array($this->before) ? $this->before : [$this->before];
@@ -65,8 +71,10 @@ class PropertyValidator
         $scene     = $validator->makeValidateScene();
         $scene->only(is_null($this->fields) ? true : $this->fields);
         if (!empty($before = $this->getBefore())) {
-            foreach ($this->methodToEventFunc($this->class, $before) as $closure) {
-                $scene->before($closure);
+            foreach ($before as $item) {
+                $refMethod = new \ReflectionMethod($this->class, $item->method);
+                $closure   = $refMethod->getClosure($this->class);
+                $scene->before($closure, ...$item->getArgs());
             }
         }
 
@@ -79,8 +87,10 @@ class PropertyValidator
         });
 
         if (!empty($after = $this->getAfter())) {
-            foreach ($this->methodToEventFunc($this->class, $after) as $closure) {
-                $scene->after($closure);
+            foreach ($after as $item) {
+                $refMethod = new \ReflectionMethod($this->class, $item->method);
+                $closure   = $refMethod->getClosure($this->class);
+                $scene->after($closure, ...$item->getArgs());
             }
         }
 
@@ -112,25 +122,5 @@ class PropertyValidator
     public function getDataClass(): object
     {
         return $this->class;
-    }
-
-    /**
-     * @param object $class
-     * @param array $methods
-     *
-     * @return array<Closure>
-     *
-     * @throws \ReflectionException
-     *
-     * @noinspection PhpFullyQualifiedNameUsageInspection
-     */
-    protected function methodToEventFunc(object $class, array $methods): array
-    {
-        $func = [];
-        foreach ($methods as $method) {
-            $refMethod = new \ReflectionMethod($class, $method);
-            $func[]    = $refMethod->getClosure($class);
-        }
-        return $func;
     }
 }
