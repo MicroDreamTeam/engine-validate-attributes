@@ -39,53 +39,35 @@ class PropertiesAndAttributeDataClass
 
 class PropertiesAndAttributeClass
 {
-    #[Validator(dataClass: PropertiesAndAttributeDataClass::class)]
+    #[PropertyValidator(PropertiesAndAttributeDataClass::class)]
     public function test()
     {
     }
 
-    #[Validator(dataClass: new PropertyValidator(PropertiesAndAttributeDataClass::class, ['name']))]
+    #[PropertyValidator(PropertiesAndAttributeDataClass::class, ['name'])]
     public function test2()
     {
     }
 
-    #[Validator(PropertiesAndAttributeValidator::class, dataClass: PropertiesAndAttributeDataClass::class)]
+    #[Validator(PropertiesAndAttributeValidator::class)]
+    #[PropertyValidator(PropertiesAndAttributeDataClass::class)]
     public function test3()
     {
     }
 
-    #[Validator(
-        PropertiesAndAttributeValidator::class,
-        fields: ['desc'],
-        dataClass: new PropertyValidator(
-            PropertiesAndAttributeDataClass::class,
-            [
-                'age'
-            ]
-        )
-    )]
+    #[Validator(PropertiesAndAttributeValidator::class, fields: ['desc'])]
+    #[PropertyValidator(PropertiesAndAttributeDataClass::class, fields: ['age'])]
     public function test4()
     {
     }
 
-    #[Validator(
-        PropertiesAndAttributeValidator::class,
-        scene: 'only_desc',
-        dataClass: new PropertyValidator(
-            PropertiesAndAttributeDataClass::class,
-            [
-                'age'
-            ]
-        )
-    )]
+    #[Validator(PropertiesAndAttributeValidator::class, scene: 'only_desc')]
+    #[PropertyValidator(PropertiesAndAttributeDataClass::class, fields: ['age'])]
     public function test5()
     {
     }
 
-    #[Validator(dataClass: new PropertyValidator(
-        PropertiesAndAttributeDataClass::class,
-        after: 'checkAge'
-    ))]
+    #[PropertyValidator(PropertiesAndAttributeDataClass::class, after:'checkAge')]
     public function test6()
     {
     }

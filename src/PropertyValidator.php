@@ -3,11 +3,22 @@
 namespace Itwmw\Validate\Attributes;
 
 use W7\Validate\Validate;
+use Attribute;
 
+/**
+ * @template T
+ */
+#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 class PropertyValidator
 {
     /**
-     * @param class-string $dataClass
+     * @var object<T>
+     */
+    protected object $class;
+
+    /**
+     *
+     * @param class-string<T> $dataClass
      * @param array<string>|null $fields
      * @param array<string>|string $after
      * @param array<string>|string $before
@@ -42,26 +53,26 @@ class PropertyValidator
     {
         if (!empty($this->dataClass) && class_exists($this->dataClass)) {
             /** @var Validate $validator */
-            $validator = validate_attribute($this->dataClass, fields: $this->fields, validate: false);
-            $dataClass = new $this->dataClass;
-            $scene     = $validator->makeValidateScene();
+            $validator   = validate_attribute($this->dataClass, fields: $this->fields, validate: false);
+            $this->class = new $this->dataClass;
+            $scene       = $validator->makeValidateScene();
             $scene->only(is_null($this->fields) ? true : $this->fields);
             if (!empty($before = $this->getBefore())) {
-                foreach ($this->methodToEventFunc($dataClass, $before) as $closure) {
+                foreach ($this->methodToEventFunc($this->class, $before) as $closure) {
                     $scene->before($closure);
                 }
             }
 
-            $scene->after(function (array $data) use ($dataClass) {
+            $scene->after(function (array $data) {
                 foreach ($data as $key => $value) {
-                    $property = new \ReflectionProperty($dataClass, $key);
-                    $property->setValue($dataClass, $value);
+                    $property = new \ReflectionProperty($this->class, $key);
+                    $property->setValue($this->class, $value);
                 }
                 return true;
             });
 
             if (!empty($after = $this->getAfter())) {
-                foreach ($this->methodToEventFunc($dataClass, $after) as $closure) {
+                foreach ($this->methodToEventFunc($this->class, $after) as $closure) {
                     $scene->after($closure);
                 }
             }
@@ -72,6 +83,14 @@ class PropertyValidator
         }
 
         return false;
+    }
+
+    /**
+     * @return T
+     */
+    public function getDataClass(): object
+    {
+        return $this->class;
     }
 
     /**

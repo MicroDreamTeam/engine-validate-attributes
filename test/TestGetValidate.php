@@ -2,6 +2,7 @@
 
 namespace Itwmw\Validate\Attributes\Test;
 
+use Itwmw\Validate\Attributes\PropertyValidator;
 use Itwmw\Validate\Attributes\ValidateAttributesFactory;
 use Itwmw\Validate\Attributes\Validator;
 use Itwmw\Validate\Middleware\ValidateMiddlewareConfig;
@@ -75,12 +76,12 @@ class UserController
     }
 
     #[Validator(validate: UserValidate::class, fields: ['pass'])]
-    #[Validator(dataClass: UserInfo::class)]
+    #[PropertyValidator(dataClass: UserInfo::class)]
     public function saveUserInfo()
     {
     }
 
-    #[Validator(dataClass: UserInfo::class, fields: ['email'])]
+    #[PropertyValidator(dataClass: UserInfo::class,fields: ['email'])]
     public function saveEmail()
     {
     }

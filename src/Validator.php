@@ -12,13 +12,11 @@ class Validator
      * @param class-string|null $validate
      * @param string $scene
      * @param array $fields
-     * @param string|null|PropertyValidator $dataClass
      */
     public function __construct(
         public ?string $validate = null,
         public string $scene = '',
-        public array $fields = [],
-        public null|string|PropertyValidator $dataClass = null
+        public array $fields = []
     ) {
     }
 }

@@ -41,26 +41,41 @@ class ClassMethodValidator
 
                         $allValidators[] = $validator;
                     }
-
-                    if (!empty($validateAttribute->dataClass)) {
-                        if ($validateAttribute->dataClass instanceof PropertyValidator) {
-                            if (($validator = $validateAttribute->dataClass->getValidator()) !== false) {
-                                $allValidators[] = $validator;
-                            }
-                            continue;
-                        }
-                        if (class_exists($validateAttribute->dataClass)) {
-                            $attributesValidator = new AttributesValidator($validateAttribute->dataClass);
-                            $validator           = $attributesValidator->validate(fields:$validateAttribute->fields ?: null, validate: false);
-                            $allValidators[]     = $validator;
-                        }
-                    }
                 }
             }
 
-            return $allValidators;
+            return array_merge($allValidators, $this->getPropertyValidator());
         } catch (ReflectionException) {
             return false;
         }
+    }
+
+    /**
+     * @return array<Validate>
+     *
+     * @throws ReflectionException
+     * @throws \W7\Validate\Exception\ValidateException
+     *
+     * @noinspection PhpFullyQualifiedNameUsageInspection
+     */
+    public function getPropertyValidator(): array
+    {
+        $method             = new \ReflectionMethod($this->class, $this->method);
+        $propertyAttributes = $method->getAttributes(PropertyValidator::class);
+        if (empty($propertyAttributes)) {
+            return [];
+        }
+
+        $validators = [];
+        foreach ($propertyAttributes as $propertyAttribute) {
+            $propertyValidator = $propertyAttribute->newInstance();
+            /** @var PropertyValidator $propertyValidator */
+            $validator = $propertyValidator->getValidator();
+            if (false !== $validator) {
+                $validators[] = $validator;
+            }
+        }
+
+        return $validators;
     }
 }
