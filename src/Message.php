@@ -2,14 +2,13 @@
 
 namespace Itwmw\Validate\Attributes;
 
-use Attribute;
 use Itwmw\Validate\Attributes\Rules\RuleInterface;
 
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Message
 {
     /**
-     * @param string $name
+     * @param string                      $name
      * @param array<RuleInterface,string> $messages
      */
     public function __construct(

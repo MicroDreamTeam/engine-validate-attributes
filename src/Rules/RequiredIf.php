@@ -2,14 +2,12 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 如果其它字段 `_anotherfield_` 为任意 *value*，则此验证字段必须存在且不为空。
  *
  * @see https://v.neww7.com/4/BuiltRule.html#required-if-anotherfield-value
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class RequiredIf implements RuleInterface
 {
     protected array $args = [];

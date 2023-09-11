@@ -2,14 +2,12 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 验证的字段必须为 *numeric*，并且长度必须在给定的 *min* 和 *max* 之间。
  *
  * @see https://v.neww7.com/4/BuiltRule.html#digits-between-min-max
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class DigitsBetween implements RuleInterface
 {
     protected array $args = [];

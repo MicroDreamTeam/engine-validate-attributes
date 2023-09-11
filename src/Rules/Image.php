@@ -2,14 +2,12 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 验证的文件必须是图片（jpg，jpeg，png，bmp，gif，svg，或 webp）。
  *
  * @see https://v.neww7.com/4/BuiltRule.html#image
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Image implements RuleInterface
 {
     protected array $args = [];

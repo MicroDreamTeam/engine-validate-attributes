@@ -2,14 +2,12 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 待验证字段只能由中文组成。
  *
  * @see https://v.neww7.com/4/BuiltRule.html#chs
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Chs implements RuleInterface
 {
     protected array $args = [];

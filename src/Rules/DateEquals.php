@@ -2,14 +2,12 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 验证字段必须等于给定日期。日期将传递到 PHP `strtotime` 函数中，以便转换为有效的 `DateTime` 实例。
  *
  * @see https://v.neww7.com/4/BuiltRule.html#date-equals-date
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class DateEquals implements RuleInterface
 {
     protected array $args = [];

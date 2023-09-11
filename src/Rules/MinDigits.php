@@ -2,14 +2,12 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 被验证的字段必须为数值且长度不能小于*value*。
  *
  * @see https://v.neww7.com/4/BuiltRule.html#min-digits-value
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class MinDigits implements RuleInterface
 {
     protected array $args = [];

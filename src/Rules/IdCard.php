@@ -2,14 +2,12 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 被验证的字段必须是合法的中国居民身份证格式。
  *
  * @see https://v.neww7.com/4/BuiltRule.html#id-card
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class IdCard implements RuleInterface
 {
     protected array $args = [];

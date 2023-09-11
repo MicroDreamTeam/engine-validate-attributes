@@ -2,10 +2,9 @@
 
 namespace Itwmw\Validate\Attributes;
 
-use Attribute;
 use JetBrains\PhpStorm\ExpectedValues;
 
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Rule
 {
     public const TYPE_NORMAL = 0;

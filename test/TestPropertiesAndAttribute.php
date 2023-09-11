@@ -69,12 +69,12 @@ class PropertiesAndAttributeClass
     {
     }
 
-    #[PropertyValidator(PropertiesAndAttributeDataClass::class, after:new EventFunc('checkAge'))]
+    #[PropertyValidator(PropertiesAndAttributeDataClass::class, after: new EventFunc('checkAge'))]
     public function test6()
     {
     }
 
-    #[PropertyValidator(PropertiesAndAttributeDataClass::class, after:new EventFunc('checkAge', 12))]
+    #[PropertyValidator(PropertiesAndAttributeDataClass::class, after: new EventFunc('checkAge', 12))]
     public function test7()
     {
     }

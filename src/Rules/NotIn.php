@@ -2,14 +2,12 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 验证字段不能包含在给定的值的列表中。
  *
  * @see https://v.neww7.com/4/BuiltRule.html#not-in-foo-bar
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class NotIn implements RuleInterface
 {
     protected array $args = [];

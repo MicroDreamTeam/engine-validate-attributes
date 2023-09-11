@@ -2,7 +2,6 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
 use JetBrains\PhpStorm\ExpectedValues;
 
 /**
@@ -14,7 +13,7 @@ use JetBrains\PhpStorm\ExpectedValues;
  *
  * @see https://v.neww7.com/4/BuiltRule.html#distinct
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Distinct implements RuleInterface
 {
     protected array $args = [];

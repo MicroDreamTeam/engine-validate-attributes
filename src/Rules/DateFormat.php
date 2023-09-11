@@ -2,8 +2,6 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 验证字段必须匹配给定的 *format*（日期格式）。当验证某个字段的时候，你应该只使用 `date` 或者 `date_format`，而不是同时使用。
  *
@@ -11,7 +9,7 @@ use Attribute;
  *
  * @see https://v.neww7.com/4/BuiltRule.html#date-format-format
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class DateFormat implements RuleInterface
 {
     protected array $args = [];

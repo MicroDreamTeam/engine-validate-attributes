@@ -2,8 +2,6 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 验证的文件必须具备与列出的其中一个扩展相匹配的 MIME 类型：
  *
@@ -11,7 +9,7 @@ use Attribute;
  *
  * @see https://v.neww7.com/4/BuiltRule.html#mimes-foo-bar
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Mimes implements RuleInterface
 {
     protected array $args = [];

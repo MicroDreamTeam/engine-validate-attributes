@@ -2,14 +2,12 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 验证的字段必须是合法的中国手机号码。
  *
  * @see https://v.neww7.com/4/BuiltRule.html#mobile
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Mobile implements RuleInterface
 {
     protected array $args = [];

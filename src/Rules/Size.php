@@ -2,8 +2,6 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 验证字段必须与给定的 *value* 大小一致。对于字符串，*value* 对应字符数。对于数字，*value* 对应给定的整数值（该属性必须有 `numeric` 或者 `integer` 规则）。
  *
@@ -13,7 +11,7 @@ use Attribute;
  *
  * @see https://v.neww7.com/4/BuiltRule.html#size-value
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Size implements RuleInterface
 {
     protected array $args = [];

@@ -2,8 +2,6 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 验证的文件必须是图片并且图片比例必须符合规则:
  *
@@ -21,7 +19,7 @@ use Attribute;
  *
  * @see https://v.neww7.com/4/BuiltRule.html#dimensions
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Dimensions implements RuleInterface
 {
     protected array $args = [];

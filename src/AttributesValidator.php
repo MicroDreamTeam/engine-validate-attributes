@@ -5,11 +5,10 @@ namespace Itwmw\Validate\Attributes;
 use Itwmw\Validate\Attributes\Rules\RuleInterface;
 use Itwmw\Validation\Support\Str;
 use W7\Validate\Support\Processor\ProcessorOptions;
-use ReflectionAttribute;
-use ReflectionClass;
 
 /**
  * @template T
+ *
  * @internal
  */
 class AttributesValidator
@@ -24,9 +23,9 @@ class AttributesValidator
     }
 
     /**
-     * @param array|null $input         验证数据，如果为null则从类中获取
-     * @param array|null $fields        待验证的字段，如果为null则验证全部字段
-     * @param bool       $validate      是否需要对类进行验证，如果为true则进行验证，否则返回验证器
+     * @param array|null $input    验证数据，如果为null则从类中获取
+     * @param array|null $fields   待验证的字段，如果为null则验证全部字段
+     * @param bool       $validate 是否需要对类进行验证，如果为true则进行验证，否则返回验证器
      *
      * @return T
      *
@@ -35,14 +34,14 @@ class AttributesValidator
      *
      * @noinspection PhpFullyQualifiedNameUsageInspection
      */
-    public function validate(?array $input = null, ?array $fields = null, bool $validate = true)
+    public function validate(array $input = null, array $fields = null, bool $validate = true)
     {
         $class = $this->class;
         if (!is_object($class)) {
             $class = new $class;
         }
 
-        $ref            = new ReflectionClass($class);
+        $ref            = new \ReflectionClass($class);
         $rules          = [];
         $properties     = [];
         $names          = [];
@@ -71,14 +70,14 @@ class AttributesValidator
             }
 
             $properties[$propertyName] = $property;
-            $validateRules             = $property->getAttributes(RuleInterface::class, ReflectionAttribute::IS_INSTANCEOF);
+            $validateRules             = $property->getAttributes(RuleInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
             $subRules                  = [];
 
             foreach ($validateRules as $rule) {
                 $subRules[] = $this->parseRule($rule->newInstance());
             }
 
-            $customRules = $property->getAttributes(Rule::class, ReflectionAttribute::IS_INSTANCEOF);
+            $customRules = $property->getAttributes(Rule::class, \ReflectionAttribute::IS_INSTANCEOF);
             foreach ($customRules as $customRule) {
                 $customRule = $customRule->newInstance();
                 $subRules[] = $customRule->getRule();
@@ -97,7 +96,7 @@ class AttributesValidator
                     } else {
                         throw new \RuntimeException('未知的自定义规则类型');
                     }
-                    $customRuleMessage = $customRuleMethod->getAttributes(RuleMessage::class, ReflectionAttribute::IS_INSTANCEOF);
+                    $customRuleMessage = $customRuleMethod->getAttributes(RuleMessage::class, \ReflectionAttribute::IS_INSTANCEOF);
                     if (!empty($customRuleMessage)) {
                         $customRuleMessage                           = reset($customRuleMessage)->newInstance();
                         $ruleMessages[Str::snake($customRule->name)] = $customRuleMessage->getMessage();
@@ -111,7 +110,7 @@ class AttributesValidator
 
             $rules[$propertyName] = $subRules;
 
-            $validateMessage = $property->getAttributes(Message::class, ReflectionAttribute::IS_INSTANCEOF);
+            $validateMessage = $property->getAttributes(Message::class, \ReflectionAttribute::IS_INSTANCEOF);
             if (!empty($validateMessage)) {
                 $messages[$propertyName] = [];
                 /** @var Message $validateMessage */
@@ -158,7 +157,7 @@ class AttributesValidator
         return $class;
     }
 
-    protected function getProcessor(\ReflectionProperty $property, string $name, object $class, ReflectionClass $ref, array &$preprocessors): void
+    protected function getProcessor(\ReflectionProperty $property, string $name, object $class, \ReflectionClass $ref, array &$preprocessors): void
     {
         $validateProcessors = $property->getAttributes($name);
         if (!empty($validateProcessors)) {

@@ -2,7 +2,6 @@
 
 namespace Itwmw\Validate\Attributes;
 
-use ReflectionException;
 use W7\Validate\Validate;
 
 /**
@@ -45,7 +44,7 @@ class ClassMethodValidator
             }
 
             return array_merge($allValidators, $this->getPropertyValidator());
-        } catch (ReflectionException) {
+        } catch (\ReflectionException) {
             return false;
         }
     }
@@ -53,7 +52,7 @@ class ClassMethodValidator
     /**
      * @return array<Validate|PropertyValidator>
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      * @throws \W7\Validate\Exception\ValidateException
      *
      * @noinspection PhpFullyQualifiedNameUsageInspection

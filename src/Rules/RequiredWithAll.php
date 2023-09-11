@@ -2,14 +2,12 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 只有在其他指定字段全部出现时，验证的字段才必须存在且不为空。
  *
  * @see https://v.neww7.com/4/BuiltRule.html#required-with-all-foo-bar
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class RequiredWithAll implements RuleInterface
 {
     protected array $args = [];

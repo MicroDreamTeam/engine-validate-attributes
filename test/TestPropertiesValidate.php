@@ -3,21 +3,20 @@
 namespace Itwmw\Validate\Attributes\Test;
 
 use Itwmw\Validate\Attributes\AttributesValidator;
+use Itwmw\Validate\Attributes\Message;
 use Itwmw\Validate\Attributes\Rules\ArrayRule;
 use Itwmw\Validate\Attributes\Rules\Between;
 use Itwmw\Validate\Attributes\Rules\ChsAlphaNum;
 use Itwmw\Validate\Attributes\Rules\Email;
-use Itwmw\Validate\Attributes\Message;
 use Itwmw\Validate\Attributes\Rules\Regex;
 use Itwmw\Validate\Attributes\Rules\Required;
-use ReflectionException;
 use W7\Validate\Exception\ValidateException;
 
 class Data
 {
     #[Required]
     #[ChsAlphaNum]
-    #[Between(min:1, max: 10)]
+    #[Between(min: 1, max: 10)]
     #[Message('名称')]
     public string $name;
 
@@ -46,7 +45,7 @@ class InitData
     public function __construct(
         #[Required]
         #[ChsAlphaNum]
-        #[Between(min:1, max: 10)]
+        #[Between(min: 1, max: 10)]
         #[Message('名称')]
         public string $name,
         #[Required]
@@ -70,15 +69,15 @@ class TestPropertiesValidate extends BaseTestCase
     /**
      * @test 测试使用数据结构和外部数据来验证
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      * @throws ValidateException
      */
     public function testCheckInputValidate()
     {
         $input = [
-            'name'  => '虞灪',
-            'email' => '123@qq.com',
-            'data'  => [
+            'name'       => '虞灪',
+            'email'      => '123@qq.com',
+            'data'       => [
                 1, 2, 3, 4
             ],
             'everything' => 123,
@@ -100,7 +99,7 @@ class TestPropertiesValidate extends BaseTestCase
     /**
      * @test 测试使用对象来验证
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      * @throws ValidateException
      */
     public function testCheckObjectDataValidate()

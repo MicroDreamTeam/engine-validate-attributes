@@ -2,9 +2,7 @@
 
 namespace Itwmw\Validate\Attributes;
 
-use Attribute;
-
-#[Attribute(Attribute::TARGET_METHOD)]
+#[\Attribute(\Attribute::TARGET_METHOD)]
 class RuleMessage
 {
     public function __construct(

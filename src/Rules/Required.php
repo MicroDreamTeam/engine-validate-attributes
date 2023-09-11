@@ -2,8 +2,6 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 验证的字段必须存在于输入数据中，而不是空。如果满足以下条件之一，则字段被视为「空」：
  *
@@ -14,7 +12,7 @@ use Attribute;
  *
  * @see https://v.neww7.com/4/BuiltRule.html#required
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Required implements RuleInterface
 {
     protected array $args = [];

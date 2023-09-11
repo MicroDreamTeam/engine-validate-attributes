@@ -2,8 +2,6 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 存在时则验证
  *
@@ -11,7 +9,7 @@ use Attribute;
  *
  * @see https://v.neww7.com/4/BuiltRule.html#%E5%AD%98%E5%9C%A8%E6%97%B6%E5%88%99%E9%AA%8C%E8%AF%81
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Sometimes implements RuleInterface
 {
     protected array $args = [];

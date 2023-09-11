@@ -2,8 +2,6 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 待验证字段的值对应的日期必须在给定的日期之前。日期将会传递给 PHP 函数 `strtotime`。
  *
@@ -11,7 +9,7 @@ use Attribute;
  *
  * @see https://v.neww7.com/4/BuiltRule.html#before-date
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Before implements RuleInterface
 {
     protected array $args = [];

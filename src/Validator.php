@@ -2,16 +2,13 @@
 
 namespace Itwmw\Validate\Attributes;
 
-use Attribute;
-
-#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_METHOD)]
+#[\Attribute(\Attribute::IS_REPEATABLE | \Attribute::TARGET_METHOD)]
 class Validator
 {
-
     /**
      * @param class-string|null $validate
-     * @param string $scene
-     * @param array $fields
+     * @param string            $scene
+     * @param array             $fields
      */
     public function __construct(
         public ?string $validate = null,

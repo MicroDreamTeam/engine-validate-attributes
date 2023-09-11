@@ -2,14 +2,12 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 验证的字段不能以给定的任意值结束。
  *
  * @see https://v.neww7.com/4/BuiltRule.html#doesnt-end-with-foo-bar
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class DoesntEndWith implements RuleInterface
 {
     protected array $args = [];

@@ -2,22 +2,22 @@
 
 namespace Itwmw\Validate\Attributes\Test;
 
-use Itwmw\Validate\Attributes\PropertyValidator;
-use Itwmw\Validate\Attributes\ValidateAttributesFactory;
-use Itwmw\Validate\Attributes\Validator;
-use Itwmw\Validate\Middleware\ValidateMiddlewareConfig;
-use W7\Validate\Validate;
 use Itwmw\Validate\Attributes\Message;
 use Itwmw\Validate\Attributes\Postprocessor;
 use Itwmw\Validate\Attributes\Preprocessor;
+use Itwmw\Validate\Attributes\PropertyValidator;
 use Itwmw\Validate\Attributes\Rules\ArrayRule;
 use Itwmw\Validate\Attributes\Rules\Between;
 use Itwmw\Validate\Attributes\Rules\ChsAlphaNum;
 use Itwmw\Validate\Attributes\Rules\Email;
 use Itwmw\Validate\Attributes\Rules\Required;
 use Itwmw\Validate\Attributes\Rules\StringRule;
+use Itwmw\Validate\Attributes\ValidateAttributesFactory;
+use Itwmw\Validate\Attributes\Validator;
+use Itwmw\Validate\Middleware\ValidateMiddlewareConfig;
 use W7\Validate\Support\Processor\ProcessorExecCond;
 use W7\Validate\Support\Processor\ProcessorParams;
+use W7\Validate\Validate;
 
 class UserValidate extends Validate
 {
@@ -32,7 +32,7 @@ class UserInfo
 {
     #[Required]
     #[ChsAlphaNum]
-    #[Between(min:1, max: 10)]
+    #[Between(min: 1, max: 10)]
     #[Message('昵称')]
     public string $nickname;
 
@@ -81,7 +81,7 @@ class UserController
     {
     }
 
-    #[PropertyValidator(dataClass: UserInfo::class,fields: ['email'])]
+    #[PropertyValidator(dataClass: UserInfo::class, fields: ['email'])]
     public function saveEmail()
     {
     }
@@ -141,7 +141,7 @@ class TestGetValidate extends BaseTestCase
     public function testDataClassValidatorForField()
     {
         $validate = ValidateMiddlewareConfig::instance()->getValidateFactory()->getValidate(UserController::class, 'saveEmail');
-        $data = $validate[0]->check([
+        $data     = $validate[0]->check([
             'email' => '123@qq.com'
         ]);
 

@@ -3,12 +3,11 @@
 namespace Itwmw\Validate\Attributes;
 
 use W7\Validate\Validate;
-use Attribute;
 
 /**
  * @template T
  */
-#[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class PropertyValidator
 {
     /**
@@ -17,10 +16,10 @@ class PropertyValidator
     protected object $class;
 
     protected Validate $validator;
+
     /**
-     *
-     * @param class-string<T> $dataClass
-     * @param array<string>|null $fields
+     * @param class-string<T>            $dataClass
+     * @param array<string>|null         $fields
      * @param array<EventFunc>|EventFunc $after
      * @param array<EventFunc>|EventFunc $before
      */

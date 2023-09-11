@@ -2,8 +2,6 @@
 
 namespace Itwmw\Validate\Attributes\Rules;
 
-use Attribute;
-
 /**
  * 待验证字段必须是给定的日期之后的值对应的日期。日期将被传递给 PHP 函数 `strtotime`，以便转换为有效的 `DateTime` 实例：
  *
@@ -19,7 +17,7 @@ use Attribute;
  *
  * @see https://v.neww7.com/4/BuiltRule.html#after-date
  */
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class After implements RuleInterface
 {
     protected array $args = [];
